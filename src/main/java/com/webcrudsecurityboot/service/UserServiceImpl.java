@@ -44,11 +44,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void update(User updatedUser, Long id) {
+    public void update(User updatedUser/*, Long id*/) {
 //        if(!updatedUser.getPassword().equals(userRepository.findById(updatedUser.getId()).getPassword())) {
 //            updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
 //        }
-        User user = userRepository.findById(id).get();
+        User user = userRepository.findById(updatedUser.getId()).get();
 
         if(Objects.nonNull(updatedUser.getId()) && updatedUser.getId() != 0.0) {
             user.setId(updatedUser.getId());
@@ -75,11 +75,11 @@ public class UserServiceImpl implements UserService {
         }
 
         if(Objects.nonNull(updatedUser.getPassword()) && !"".equalsIgnoreCase(updatedUser.getPassword())) {
-//            if(!(user.getPassword().equals(updatedUser.getPassword()))) {
-//                user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-//            }
+            if(!(updatedUser.getPassword().equals(show(updatedUser.getId()).getPassword()))) {
+                updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            }
         }
-        saveUser(updatedUser);
+        userRepository.save(updatedUser);
     }
 
     @Override

@@ -10,7 +10,7 @@ public interface UserService {
     User show(Long id);
     //Optional<User> findById(Long id);
     void saveUser(User user);
-    void update(User updatedUser, Long id);
+    void update(User updatedUser/*, Long id*/);
     void delete(Long id);
     UserDetails loadUserByUsername(String name);
 }
