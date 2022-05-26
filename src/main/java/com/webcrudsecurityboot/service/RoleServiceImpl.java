@@ -16,12 +16,14 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<Role> getAllRoles() {
-        return roleRepository.getAllRoles();
+        //return roleRepository.getAllRoles();
+        return (List<Role>) roleRepository.findAll();
     }
 
     @Override
     public Role show(Long id) {
-        return roleRepository.show(id);
+        //return roleRepository.show(id);
+        return roleRepository.findById(id).get();
     }
 
     @Override
@@ -30,15 +32,15 @@ public class RoleServiceImpl implements RoleService {
         roleRepository.save(role);
     }
 
-    @Override
-    @Transactional
-    public void update(Role updatedRole) {
-        roleRepository.update(updatedRole);
-    }
-
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        roleRepository.delete(id);
-    }
+//    @Override
+//    @Transactional
+//    public void update(Role updatedRole) {
+//        roleRepository.update(updatedRole);
+//    }
+//
+//    @Override
+//    @Transactional
+//    public void delete(Long id) {
+//        roleRepository.delete(id);
+//    }
 }

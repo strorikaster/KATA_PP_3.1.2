@@ -1,9 +1,9 @@
 package com.webcrudsecurityboot.controller;
 
-import com.webcrudsecurityboot.service.RoleService;
-import com.webcrudsecurityboot.service.UserService;
 import com.webcrudsecurityboot.model.Role;
 import com.webcrudsecurityboot.model.User;
+import com.webcrudsecurityboot.service.RoleService;
+import com.webcrudsecurityboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +33,7 @@ public class AdminController {
 
     @GetMapping(value = "admin/all")
     public String allUsers(ModelMap model) {
-        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("users", userService.fetchUserList());
         return "index";
     }
 
@@ -64,7 +64,7 @@ public class AdminController {
         }
 
         user.setRoles(roles);
-        userService.save(user);
+        userService.saveUser(user);
         return "redirect:/admin";
     }
 
@@ -78,6 +78,7 @@ public class AdminController {
 
     @PatchMapping("admin/{id}")
     public String update(@ModelAttribute("user") @Valid User user,
+                         //@RequestParam("id") Long id,
                          @RequestParam("rolesSelected") Long[] rolesId,
                          BindingResult bindingResult
     ) {
@@ -89,7 +90,7 @@ public class AdminController {
             roles.add(roleService.show(roleId));
         }
         user.setRoles(roles);
-        userService.update(user);
+        userService.update(user, user.getId());
         return "redirect:/admin";
     }
 
