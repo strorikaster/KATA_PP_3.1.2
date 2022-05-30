@@ -1,7 +1,7 @@
 package com.webcrudsecurityboot.service;
 
-import com.webcrudsecurityboot.model.User;
 import com.webcrudsecurityboot.repository.UserRepository;
+import com.webcrudsecurityboot.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,10 +14,15 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+
     private UserRepository userRepository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public List<User> getAllUsers() {
@@ -39,6 +44,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void update(User updatedUser) {
+//        if(!show(updatedUser.getId()).getPassword().equals(updatedUser.getPassword())) {
+//            updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+//        }
         if(!updatedUser.getPassword().equals(userRepository.show(updatedUser.getId()).getPassword())) {
             updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
@@ -52,11 +60,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = userRepository.findByName(name);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByName(email);
         if(user == null) {
-            throw new UsernameNotFoundException("User " + name + " not found!");
+            throw new UsernameNotFoundException("User " + email + " not found!");
+
         }
         return user;
     }
+
+
 }

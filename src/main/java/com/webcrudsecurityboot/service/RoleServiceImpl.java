@@ -1,7 +1,7 @@
 package com.webcrudsecurityboot.service;
 
-import com.webcrudsecurityboot.model.Role;
 import com.webcrudsecurityboot.repository.RoleRepository;
+import com.webcrudsecurityboot.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +15,13 @@ public class RoleServiceImpl implements RoleService {
     private RoleRepository roleRepository;
 
     @Override
+    @Transactional
     public List<Role> getAllRoles() {
         return roleRepository.getAllRoles();
     }
 
     @Override
+    @Transactional
     public Role show(Long id) {
         return roleRepository.show(id);
     }
@@ -28,17 +30,5 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public void save(Role role) {
         roleRepository.save(role);
-    }
-
-    @Override
-    @Transactional
-    public void update(Role updatedRole) {
-        roleRepository.update(updatedRole);
-    }
-
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        roleRepository.delete(id);
     }
 }

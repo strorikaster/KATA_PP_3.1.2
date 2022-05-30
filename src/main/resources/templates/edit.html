@@ -10,6 +10,7 @@
   <div>
     <label>Update user:</label>
     <br>
+    <input type="hidden" th:value="${id}" th:attr ="name='id'"/>
     <label for="name">Enter user name:</label>
     <input type="text" th:field="*{name}" id="name"/>
     <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
@@ -33,7 +34,6 @@
     <div>
       <p>Choose role: </p>
       <select name="rolesSelected" multiple required size="6">
-        <!--option disabled selected>Select role</option-->
         <div  th:each="role : ${allRoles}">
           <option th:text="${role.getRole()}" th:value="${role.getId()}" name="roles"/>
         </div>

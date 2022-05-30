@@ -7,11 +7,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
     @PersistenceContext
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
     public List<User> getAllUsers() {
         return entityManager.createQuery("from User", User.class).getResultList();
@@ -36,7 +37,7 @@ public class UserRepositoryImpl implements UserRepository {
         entityManager.remove(user);
     }
 
-    public User findByName(String name) {
-        return (User) entityManager.createQuery("SELECT u FROM User u where u.name = :name").setParameter("name", name).getSingleResult();
+    public User findByName(String email) {
+        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles roles where u.email = :email ", User.class).setParameter("email", email).getSingleResult();
     }
 }

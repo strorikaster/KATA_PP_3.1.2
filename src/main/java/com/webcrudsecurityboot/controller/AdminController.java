@@ -1,18 +1,18 @@
 package com.webcrudsecurityboot.controller;
 
-import com.webcrudsecurityboot.service.RoleService;
-import com.webcrudsecurityboot.service.UserService;
 import com.webcrudsecurityboot.model.Role;
 import com.webcrudsecurityboot.model.User;
+import com.webcrudsecurityboot.service.RoleService;
+import com.webcrudsecurityboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 public class AdminController {
@@ -26,20 +26,33 @@ public class AdminController {
         this.roleService = roleService;
     }
 
+    @GetMapping(value = "/")
+    public String start(){
+        return "redirect:/login";
+    }
+
+    @GetMapping(value = "/login")
+    public String login() {
+            return "login";
+    }
+
     @GetMapping(value = "/admin")
     public String welcome() {
         return "redirect:/admin/all";
     }
 
     @GetMapping(value = "admin/all")
-    public String allUsers(ModelMap model) {
-        model.addAttribute("users", userService.getAllUsers());
+    public String allUsers(@AuthenticationPrincipal User user, Model model) {
+        model.addAttribute("user", user);
+        model.addAttribute("allUsers", userService.getAllUsers());
+        model.addAttribute("roles", roleService.getAllRoles());
         return "index";
     }
 
-    @GetMapping(value = "admin/{id}")
-    public String show(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", userService.show(id));
+    @GetMapping("admin/{id}")
+    public String show(@AuthenticationPrincipal User user, @PathVariable("id") Long id, Model model) {
+        model.addAttribute("user", userService.show(user.getId()));
+        model.addAttribute("role", roleService.show(user.getId()));
         return "show";
     }
 
@@ -47,7 +60,7 @@ public class AdminController {
     public String addUser(Model model,
                           @ModelAttribute("user") User user,
                           @ModelAttribute("role") Role role) {
-        model.addAttribute("allRoles", roleService.getAllRoles());
+        model.addAttribute("roles", roleService.getAllRoles());
         return "new";
     }
 
@@ -70,32 +83,35 @@ public class AdminController {
 
 
     @GetMapping(value = "admin/{id}/edit")
-    public String editUser(ModelMap model, @PathVariable("id") Long id) {
+    public String editUser(Model model, @PathVariable("id") Long id) {
         model.addAttribute("user", userService.show(id));
-        model.addAttribute("allRoles", roleService.getAllRoles());
+        model.addAttribute("roles", roleService.getAllRoles());
         return "edit";
     }
 
     @PatchMapping("admin/{id}")
-    public String update(@ModelAttribute("user") @Valid User user,
-                         @RequestParam("rolesSelected") Long[] rolesId,
-                         BindingResult bindingResult
+    public String update(@ModelAttribute("user") User user,
+                         @RequestParam("rolesSelected") Long[] rolesId
+
     ) {
-        if(bindingResult.hasErrors()) {
-            return "edit";
-        }
-        HashSet<Role> roles = (HashSet<Role>) user.getRoles();
+        Set<Role> roles = new HashSet();
         for(Long roleId : rolesId) {
             roles.add(roleService.show(roleId));
         }
         user.setRoles(roles);
         userService.update(user);
-        return "redirect:/admin";
+        return "redirect:/admin/all";
     }
 
     @DeleteMapping("admin/{id}")
     public String delete(@PathVariable("id") Long id) {
         userService.delete(id);
         return "redirect:/admin";
+    }
+
+    @GetMapping(value = "/user")
+    public String getUserPage(Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("user", user);
+        return "show";
     }
 }

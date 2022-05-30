@@ -1,6 +1,5 @@
 package com.webcrudsecurityboot.repository;
 
-
 import com.webcrudsecurityboot.model.Role;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +11,7 @@ import java.util.List;
 public class RoleRepositoryImpl implements RoleRepository {
 
     @PersistenceContext
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
 
     @SuppressWarnings("unchecked")

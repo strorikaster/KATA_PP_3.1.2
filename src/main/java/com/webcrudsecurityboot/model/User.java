@@ -18,28 +18,29 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @Column
     @NotEmpty(message = "Empty values not allowed")
     @Size(min = 2, max = 30, message = "Name should be between 2 and 30 character")
     private String name;
     @Column
     @NotEmpty(message = "Empty values not allowed")
     private String surName;
-    @Column
+    @Column(unique = true)
     @NotEmpty(message = "Empty values not allowed")
     @Email(message = "Not correct email entered")
     private String email;
     @Column
     @Min(value = 0, message = "Age must be greater than 0")
     private int age;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tab_users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
     @Column
     @NotEmpty(message = "Empty values not allowed")
-    @Size(min = 2, max = 256, message = "Password should be between 2 and 30 character")
+    @Size(min = 6, max = 256, message = "Password should be between 6 and 30 character")
     private String password;
 
     public User() {
@@ -110,7 +111,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        return getRoles();
     }
 
     @Override
@@ -142,4 +143,18 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + name + '\'' +
+                ", lastName='" + surName + '\'' +
+                ", ager='" + age + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
+
 }

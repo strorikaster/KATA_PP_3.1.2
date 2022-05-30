@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-
-
 @Configuration
 @PropertySource("application.properties")
 @EnableTransactionManagement
@@ -66,7 +64,6 @@ public class HiberConfig {
         return transactionManager;
     }
 
-
     private Properties additionalProperties() {
         Properties properties = new Properties();
         properties.put(PROP_HIBERNATE_DIALECT, env.getRequiredProperty(PROP_HIBERNATE_DIALECT));
@@ -74,7 +71,6 @@ public class HiberConfig {
         properties.put(PROP_HIBERNATE_FORMAT_SQL, env.getRequiredProperty(PROP_HIBERNATE_FORMAT_SQL));
         properties.put(PROP_HIBERNATE_HBM2DDL_AUTO, env.getRequiredProperty(PROP_HIBERNATE_HBM2DDL_AUTO));
         properties.put(PROP_ENTITYMANAGER_PACKAGES_TO_SCAN, env.getRequiredProperty(PROP_ENTITYMANAGER_PACKAGES_TO_SCAN));
-
         return properties;
     }
 
